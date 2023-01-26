@@ -1,17 +1,77 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import {useUserContext} from '../../context/UserContext.jsx'
 import { useParams } from 'react-router-dom'
 
-const DetailNew = ({info}) => {
-    const { id } = useParams()
-    console.log(id)
+const toast = (text)=>{
+    Toastify({
+        text: text,
+        className: "info",
+        style: {
+            background: "#eb3434",
+        }
+        }).showToast();
+}
+
+const DetailNew = () => {
+    const [loading, setLoading] = useState(true)
+    const [article, setArticle] = useState({})
+    const {user, setUser} = useUserContext()
+    const { title } = useParams()
+
+    const url = 'http://localhost:8080'
+
+    useEffect(()=>{
+        fetch(`${url}/api/news/${title}`, {
+            headers: {
+                Authentication: `Bearer ${user.token}`,
+            }
+        })
+        .then((result)=>{
+            if(result.status == 400){
+                toast('Bad Request')
+            }else if(result.status == 401){
+                toast('Unauthorized')
+                setUser(false)
+            }else if(result.status == 500){
+                toast('Server Error')
+            }else if(result.status == 200){
+                result.json().then((data) => {
+                    setArticle(data.article)
+                    setLoading(false)
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    },[])
+
+
     return (
-        <div className='container'>
-            <h1>detail view id: {id} loading ... </h1>
-            <h2>Elon Musk admits he didn't have a "specific number" for how much funding was needed to take Tesla private</h2>
-            <img src="https://c.biztoc.com/p/2aa098d3b8c8a8d8/og.webp" className="img-fluid" alt="..."></img>
-            <p>businessinsider.com</p>
-            <h3>A courtroom sketch shows Tesla CEO Elon Musk testifying on January 23, 2023.Vicki Behringer/ReutersElon Musk admitted he didn't have a \"specific number\" for how much funding was needed to take Tesla … </h3>
-        </div>
+        <>
+        {
+            loading?
+            <div className='container'>
+                <h1>Loading Article ... </h1>
+                <h2></h2>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" className="img-fluid" alt="article img"></img>
+                <p>Autor: loading...</p>
+                <div className="spinner-border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+            :
+            <div className='container'>
+                <h1>{article.title}</h1>
+                <img src={article.urlToImage} className="img-fluid" alt="article img"></img>
+                <h5>Author: {article.author} {article.publishedAt}</h5>
+                <h3>{article.description}</h3><br/>
+                <h3>{article.content}</h3>
+                <a target='_blank' href={article.url}>see more</a>
+            </div>
+
+        }
+        </>
     )
 }
 
