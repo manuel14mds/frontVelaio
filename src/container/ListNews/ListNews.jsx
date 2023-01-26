@@ -14,10 +14,12 @@ const toast = (text)=>{
 const ListNews = () => {
     const [news, setNews] = useState([])
 
-    const url = 'http://localhost:8080'
+    const url = 'http://127.0.0.1:8080'
 
     useEffect(()=>{
-        fetch(`${url}/api/news`)
+        fetch(`${url}/api/news`,{
+            credentials: 'same-origin'
+        })
         .then((result)=>{
             if(result.status == 400){
                 toast('weather, Bad Request')

@@ -47,6 +47,7 @@ const Login = () => {
         })
         .catch((error) => {
             console.error('Error:', error);
+            
         });
     }
 
@@ -58,11 +59,11 @@ const Login = () => {
             </blockquote>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
+                    <label>Email address</label>
                     <input type="email" className="form-control" name="email" aria-describedby="emailHelp" />
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Password</label>
+                    <label>Password</label>
                     <input type="password" className="form-control" name="password" />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>

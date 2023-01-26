@@ -16,13 +16,14 @@ const Time = () => {
     const [loading, setLoading] = useState(true)
     const [time, setTime] = useState({})
 
-    const url = 'http://localhost:8080'
+    const url = 'http://127.0.0.1:8080'
 
-    useEffect(()=>{
+    const request = async()=>{
         fetch(`${url}/api/time`, {
             headers: {
                 Authentication: `Bearer ${user.token}`,
-            }
+            },
+            credentials: 'same-origin'
         })
         .then((result)=>{
             if(result.status == 400){
@@ -42,6 +43,12 @@ const Time = () => {
         .catch((error) => {
             console.error('Error:', error);
         });
+    }
+    useEffect(()=>{
+        setTimeout(() => {
+            request()
+        }, 2000);
+        
     },[])
 
     return (
