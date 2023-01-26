@@ -47,7 +47,7 @@ const Time = () => {
     useEffect(()=>{
         setTimeout(() => {
             request()
-        }, 2000);
+        }, 1000);
         
     },[])
 
